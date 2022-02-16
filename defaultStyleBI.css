@@ -2,5 +2,6 @@
 {
     color:white;
     text-shadow: 1px 1px #000000;
-    font-weight:bold
+    font-weight:bold;
+    background: transparent;
 }
