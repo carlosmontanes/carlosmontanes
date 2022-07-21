@@ -1,33 +1,59 @@
-<!doctype html>
-<html>
+videojs.registerPlugin('passwordToView', function(pluginOptions) {
+  var myPlayer = this,
+    passwordToMatch = '',
+    myModal,
+    modalOptions = {},
+    formButton,
+    passwordInput,
+    // Create div which will hold content for ModalDialog
+    newElement = document.createElement('div'),
+    // Get a ModalDialog object
+    ModalDialog = videojs.getComponent('ModalDialog');
 
-<head>
-  <meta charset="UTF-8">
-  <title>Untitled Document</title>
-  <link href="password-to-view-pass-in-password.css" rel="stylesheet">
-</head>
+  myPlayer.muted(true);
 
-<body>
+  // +++ Display ModalDialog +++
+  // Read password from options
+  passwordToMatch = pluginOptions.password;
 
-  <video-js id="myPlayerID"
-    data-video-id="5831706803001"
-    data-account="1752604059001"
-    data-player="default"
-    data-embed="default"
-    data-application-id
-    class="video-js"
-    controls></video-js>
-  <script src="//players.brightcove.net/1752604059001/default_default/index.min.js"></script>
+  //Create a div in which to place HTML content
+  newElement.setAttribute("style", "display:flex;justify-content:center;align-items:center;");
 
-  <script src="password-to-view-pass-in-password.js"></script>
+  // Create content for ModalDialog
+  newElement.innerHTML = '<div><img class="bcls-image" src="//learning-services-media.brightcove.com/doc-assets/player-development/samples/password/lock-icon.png"><br><input class="theForm" type="password" id="passwordInputID"><br><input id="formButtonID" class="theForm" type="submit" value="Sign In"></div>';
 
-  <script>
-    videojs.getPlayer('myPlayerID').ready(function() {
-      var myPlayer = this;
-      myPlayer.passwordToView({'password': 'newpass'});
-    });
-  </script>
+  // Be sure user cannot close ModalDialog, set content
+  modalOptions.uncloseable = true;
+  modalOptions.content = newElement;
 
-</body>
+  // Create a specific ModalDialog and display it
+  myModal = new ModalDialog(myPlayer, modalOptions);
+  myPlayer.addChild(myModal);
+  myModal.open();
 
-</html>
+  // +++ Add event listeners to check password +++
+  // Add an event listener to the button
+  formButton = newElement.querySelector('#formButtonID');
+  myPlayer.on(formButton, 'click', closeModal);
+
+  // Add event listener if user presses Enter key after entering password
+  passwordInput = newElement.querySelector('#passwordInputID');
+  myPlayer.on(passwordInput, 'keydown', function(event) {
+    if (event.keyCode === 13) {
+      closeModal();
+    }
+  });
+
+  // +++ Check entered password against saved password and act accordingly +++
+  function closeModal() {
+    var userInputPassword = document.getElementById('passwordInputID').value;
+    // If passwords match close ModalDialog and play video
+    if (userInputPassword == passwordToMatch) {
+      myModal.close();
+      myPlayer.play();
+      // If passwords do not match display dialog indicating so
+    } else {
+      window.alert('Sorry, password is incorrect. Try again.')
+    }
+  }
+});
