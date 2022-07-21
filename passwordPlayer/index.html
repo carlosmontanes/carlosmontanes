@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Untitled Document</title>
+  <link href="style.css" rel="stylesheet">
+</head>
+
+<body>
+
+  <video-js id="myPlayerID"
+    data-video-id="6263626708001"
+    data-account="2080968221001"
+    data-player="y8zJRwCOmK"
+    data-embed="default"
+    data-application-id
+    class="video-js"
+    controls></video-js>
+  <script src="//players.brightcove.net/2080968221001/y8zJRwCOmK_default/index.min.js"></script>
+
+  <script src="main.js"></script>
+
+  <script>
+    videojs.getPlayer('myPlayerID').ready(function() {
+      var myPlayer = this;
+      myPlayer.passwordToView({'password': 'newpass'});
+    });
+  </script>
+
+</body>
+
+</html>
